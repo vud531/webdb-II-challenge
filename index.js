@@ -11,7 +11,7 @@ server.use(helmet());
 // endpoints here
 
 
-const sendUserError = (status, message, res) => {
+const sendanimalError = (status, message, res) => {
   // This is just a helper method that we'll use for sending errors when things go wrong.
   res.status(status).json({ errorMessage: message });
   return;
@@ -31,46 +31,45 @@ server.get('/api/zoos', (req, res) => {
   .catch (error => {
       console.log(error)
       res.status(500).json({
-          message: 'Error retrieving the users'
+          message: 'Error retrieving the animals'
       })
   })
 })
 
 server.get('/api/zoos/:id', (req, res) => {
   DB.findById(req.params.id)
-  .then(user => {
-      if (user) {
-          res.status(200).json(user);
+  .then(animal => {
+      if (animal) {
+          res.status(200).json(animal);
       } else {
-          res.status(404).json({ message: 'User not found' });
+          res.status(404).json({ message: 'animal not found' });
       }
   })
   .catch (error => {
       // log error to database
       console.log(error);
       res.status(500).json({
-      message: 'Error retrieving the User',
+      message: 'Error retrieving the animal',
       });
   })
 });
 
 server.post('/api/zoos', (req, res) => {
   // console.log(req)
-  if (req.body.name && req.body.bio) {
+  if (req.body.name) {
       try {
-          const user = DB.insert(req.body);
-          res.status(201).json(user);
+          const animal = DB.insert(req.body);
+          res.status(201).json(animal);
       } catch (error) {
           // log error to database
           console.log(error);
           res.status(500).json({
-          message: 'Error saving the user',
+          message: 'Error saving the animal',
           });
       }
   }
   else {
-      if (!req.body.name) sendUserError(400, 'Must provide a name', res);
-      if (!req.body.bio) sendUserError(400, 'Must provide a bio', res);
+      if (!req.body.name) sendanimalError(400, 'Must provide a name', res);
   }
 
 
@@ -80,9 +79,9 @@ server.delete('/api/zoos/:id', async (req, res) => {
   DB.remove(req.params.id)
   .then(count => {
       if (count > 0) {
-          res.status(200).json({ message: 'The user has been removed' });
+          res.status(200).json({ message: 'The animal has been removed' });
       } else {
-          res.status(404).json({ message: 'The user could not be found' });
+          res.status(404).json({ message: 'The animal could not be found' });
       }
   })
   .catch (error => {
@@ -90,31 +89,31 @@ server.delete('/api/zoos/:id', async (req, res) => {
           // log error to database
           console.log(error);
           res.status(500).json({
-          message: 'Error removing the user',
+          message: 'Error removing the animal',
           });
       }
   }) 
 });
 
 server.put('/api/zoos/:id', async (req, res) => {
-  if (!req.body.name || !req.body.bio) {
-      sendUserError(400, 'Must provide a name and a bio', res);
+  if (!req.body.name) {
+      sendanimalError(400, 'Must provide a name and a bio', res);
       return;
   }
 
   DB.update(req.params.id, req.body)
-  .then(user => {
-      if (user) {
-          res.status(200).json(user);
+  .then(animal => {
+      if (animal) {
+          res.status(200).json(animal);
       } else {
-          res.status(404).json({ message: 'The user could not be found' });
+          res.status(404).json({ message: 'The animal could not be found' });
       }
   })
   .catch (error => {
       // log error to database
       console.log(error);
       res.status(500).json({
-        message: 'Error updating the user',
+        message: 'Error updating the animal',
       });
   }) 
 })
